@@ -18,89 +18,117 @@ public class SimpleCalculator extends JFrame implements ActionListener {
 
     private String selectedOperator = ""; // Stores the selected operation (+, -, *, /)
 
+    // Modern Color Palette
+    private final Color bgColor = new Color(44, 62, 80);      // Dark Blue-Gray
+    private final Color panelColor = new Color(52, 73, 94);   // Lighter Blue-Gray
+    private final Color textColor = new Color(236, 240, 241);  // Off-white
+    private final Color operatorColor = new Color(230, 126, 34); // Orange
+    private final Color equalsColor = new Color(39, 174, 96);   // Green
+    private final Color fieldColor = new Color(255, 255, 255);
+
     public SimpleCalculator() {
         // Frame setup
         setTitle("Simple Calculator");
-        setSize(400, 300); // Set window size
+        setSize(400, 350); // Slightly larger for better spacing
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
-        // Main panel with BorderLayout
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding around the main panel
-        mainPanel.setBackground(new Color(240, 240, 240)); // Light grey background
+        // Main panel
+        JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+        mainPanel.setBackground(bgColor);
 
-        // Panel for other components (input, operators, control)
-        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
-        contentPanel.setBackground(new Color(240, 240, 240)); // Match background
+        // Content panel
+        JPanel contentPanel = new JPanel(new BorderLayout(15, 15));
+        contentPanel.setBackground(bgColor);
 
-        // Input panel (GridLayout for two rows of label/field)
-        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        inputPanel.setBackground(new Color(240, 240, 240)); // Match background
-        JLabel num1Label = new JLabel("Number 1:");
-        num1Label.setHorizontalAlignment(SwingConstants.RIGHT);
-        num1Field = new JTextField(15);
-        JLabel num2Label = new JLabel("Number 2:");
-        num2Label.setHorizontalAlignment(SwingConstants.RIGHT);
-        num2Field = new JTextField(15);
+        // Input panel
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 15));
+        inputPanel.setBackground(bgColor);
+
+        JLabel num1Label = createStyledLabel("Number 1:");
+        num1Field = createStyledTextField();
+        
+        JLabel num2Label = createStyledLabel("Number 2:");
+        num2Field = createStyledTextField();
 
         inputPanel.add(num1Label);
         inputPanel.add(num1Field);
         inputPanel.add(num2Label);
         inputPanel.add(num2Field);
 
-        // Operator panel (GridLayout for buttons)
+        // Operator panel
         JPanel operatorPanel = new JPanel(new GridLayout(1, 4, 10, 10));
-        operatorPanel.setBackground(new Color(240, 240, 240)); // Match background
-        addButton = new JButton("+");
-        subtractButton = new JButton("-");
-        multiplyButton = new JButton("*");
-        divideButton = new JButton("/");
+        operatorPanel.setBackground(bgColor);
 
-        // Customize button appearance slightly for better aesthetics
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
-        addButton.setFont(buttonFont);
-        subtractButton.setFont(buttonFont);
-        multiplyButton.setFont(buttonFont);
-        divideButton.setFont(buttonFont);
-
-        // You could add more color customization here if desired, e.g.,
-        // addButton.setBackground(Color.GREEN);
-        // subtractButton.setBackground(Color.RED);
+        addButton = createStyledButton("+", operatorColor);
+        subtractButton = createStyledButton("-", operatorColor);
+        multiplyButton = createStyledButton("*", operatorColor);
+        divideButton = createStyledButton("/", operatorColor);
 
         operatorPanel.add(addButton);
         operatorPanel.add(subtractButton);
         operatorPanel.add(multiplyButton);
         operatorPanel.add(divideButton);
 
-        // Control panel (GridLayout for equals button and result label)
-        JPanel controlPanel = new JPanel(new GridLayout(1, 2, 10, 10));
-        controlPanel.setBackground(new Color(240, 240, 240)); // Match background
-        equalsButton = new JButton("=");
-        equalsButton.setFont(buttonFont);
-        resultLabel = new JLabel("Result: ");
-        resultLabel.setFont(resultLabel.getFont().deriveFont(Font.BOLD, 18f)); // Make result bold and larger
+        // Control panel
+        JPanel controlPanel = new JPanel(new BorderLayout(10, 10));
+        controlPanel.setBackground(bgColor);
 
-        controlPanel.add(equalsButton);
-        controlPanel.add(resultLabel);
+        equalsButton = createStyledButton("=", equalsColor);
+        resultLabel = createStyledLabel("Result: ");
+        resultLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        resultLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
-        // Add panels to contentPanel
+        controlPanel.add(equalsButton, BorderLayout.WEST);
+        equalsButton.setPreferredSize(new Dimension(80, 40));
+        controlPanel.add(resultLabel, BorderLayout.CENTER);
+
+        // Layout assembly
         contentPanel.add(inputPanel, BorderLayout.NORTH);
         contentPanel.add(operatorPanel, BorderLayout.CENTER);
         contentPanel.add(controlPanel, BorderLayout.SOUTH);
 
-        // Add contentPanel to mainPanel
         mainPanel.add(contentPanel, BorderLayout.CENTER);
-
-        // Add main panel to frame
         add(mainPanel);
 
-        // Add action listeners
+        // Action listeners
         addButton.addActionListener(this);
         subtractButton.addActionListener(this);
         multiplyButton.addActionListener(this);
         divideButton.addActionListener(this);
         equalsButton.addActionListener(this);
+    }
+
+    private JLabel createStyledLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setForeground(textColor);
+        label.setFont(new Font("SansSerif", Font.BOLD, 14));
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        return label;
+    }
+
+    private JTextField createStyledTextField() {
+        JTextField field = new JTextField();
+        field.setBackground(fieldColor);
+        field.setForeground(bgColor);
+        field.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(panelColor, 1),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        return field;
+    }
+
+    private JButton createStyledButton(String text, Color bg) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("SansSerif", Font.BOLD, 18));
+        button.setBackground(bg);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createRaisedBevelBorder());
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
     }
 
     @Override
